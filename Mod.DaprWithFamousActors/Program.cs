@@ -38,7 +38,6 @@ namespace Mod.DaprWithFamousActors
                     .AddActivityPropagation()
                     .UseLocalhostClustering()
                     .AddMemoryGrainStorage("StateStorage")
-                    .ConfigureApplicationParts(parts => parts.AddApplicationPart(typeof(Implementation.Grains.GreeterGrain).Assembly).WithReferences())
                     .ConfigureServices(s =>
                     {
                         s.AddMediatR(typeof(Implementation.Mediatr.GreeterGrain.OnSayHello.OnSayHelloHandler).Assembly);
