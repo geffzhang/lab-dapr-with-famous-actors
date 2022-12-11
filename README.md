@@ -20,7 +20,7 @@ Mediatr is used for tidy coding, single point of entry for sub methods and possi
 With Dapr pub-sub for inter-service events and Orleans streams for intra-service events, using mediatr notifications/events with more than one handler is [not recommended](https://codeopinion.com/why-use-mediatr-3-reasons-why-and-1-reason-not/).
 
 ## Distributed tracing support:
-Dapr and Grpc has distributed tracing support out of the box. But as of version 3.4.2, Microsoft Orleans doesn't officially have it. Though [@Ilchert](https://github.com/Ilchert) has a [pull waiting to be merged](https://github.com/dotnet/orleans/pull/6853). Tracing support for Microsoft Orleans is copied from that source with minor changes on couple of internal/private classes/fields to public.
+Dapr and Grpc has distributed tracing support out of the box.  Microsoft Orleans 7 also officially have it. 
 
 ## More References
 1. [Sample Dapr test client and Dapr enabled service listening on Grpc](https://github.com/GennadiiSvichinskyi/test-grpc-dapr)

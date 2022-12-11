@@ -17,57 +17,7 @@ namespace Mod.DaprWithFamousActors.DaprClient
             string name = args[2] ?? "Gennadii";
             var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
             try
-            {
-                //using var client = new DaprClientBuilder()
-                //.UseJsonSerializationOptions(options)
-                //.Build();
-                //var anyReply = await client.InvokeMethodAsync<HelloRequest, HelloReply>(
-                //    AppId,
-                //    MethodName,
-                //    new HelloRequest
-                //    {
-                //        Name = name
-                //    }
-                //);
-
-                //using var client = new DaprClientBuilder()
-                //.UseJsonSerializationOptions(options)
-                //.Build();
-                //var anyReply = await client.InvokeMethodGrpcAsync<HelloRequest, HelloReply>(
-                //    AppId,
-                //    MethodName,
-                //    new HelloRequest
-                //    {
-                //        Name = name
-                //    }
-                //);
-
-                //using var client = new CustomDaprClientBuilder()
-                //    .UseSerializationOptions(new ProtobufSerDes())
-                //    .Build();
-                //var anyReply = await client.InvokeMethodGrpcAsync<HelloRequest, HelloReply>(
-                //    AppId,
-                //    MethodName,
-                //    new HelloRequest
-                //    {
-                //        Name = name
-                //    }
-                //);
-
-                //Console.WriteLine($"Reply : {anyReply.Message}");
-
-                //using var client = new DaprClientBuilder()
-                //    .UseJsonSerializationOptions(options)
-                //    .Build();
-                //await client.PublishEventAsync<HelloRequest>(
-                //    "pubsub",
-                //    "SayHello",
-                //    new HelloRequest
-                //    {
-                //        Name = name
-                //    }
-                //);
-
+            { 
                 using var client = new CustomDaprClientBuilder()
                     .UseSerializationOptions(new ProtobufSerDes())
                     .Build();
