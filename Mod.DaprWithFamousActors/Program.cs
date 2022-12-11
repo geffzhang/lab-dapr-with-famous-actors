@@ -38,14 +38,9 @@ namespace Mod.DaprWithFamousActors
                     .AddActivityPropagation()
                     .UseLocalhostClustering()
                     .AddMemoryGrainStorage("StateStorage")
-                    .ConfigureApplicationParts(parts => parts.AddApplicationPart(typeof(Implementation.Grains.GreeterGrain).Assembly).WithReferences())
                     .ConfigureServices(s =>
                     {
                         s.AddMediatR(typeof(Implementation.Mediatr.GreeterGrain.OnSayHello.OnSayHelloHandler).Assembly);
-                        //s.AddDaprClient(conf =>
-                        //{
-                        //    conf.UseJsonSerializationOptions(new System.Text.Json.JsonSerializerOptions(System.Text.Json.JsonSerializerDefaults.Web));
-                        //});
                         s.AddNamedDaprClient("first", conf =>
                         {
                             //conf.UseJsonSerializationOptions(new System.Text.Json.JsonSerializerOptions(){ IncludeFields = true, PropertyNameCaseInsensitive = true });
@@ -84,6 +79,8 @@ namespace Mod.DaprWithFamousActors
                                 await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
                             });
                         });
+                       // app.UseOpenTelemetryPrometheusScrapingEndpoint();
+
                     });
                 })
                 .ConfigureServices(services =>
@@ -92,6 +89,8 @@ namespace Mod.DaprWithFamousActors
                         (builder) => builder
                             .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(typeof(Program).Assembly.GetName().Name))
                             .AddAspNetCoreInstrumentation()
+                            .AddSource("Microsoft.Orleans.Runtime")
+                            .AddSource("Microsoft.Orleans.Application")
                             .AddSource(Implementation.GrainFilters.ActivityPropagationGrainCallFilter.ActivitySourceName)
                             .AddZipkinExporter()
                             );
@@ -102,6 +101,7 @@ namespace Mod.DaprWithFamousActors
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                     logging.AddConsole();
                 });
+            
         }
 
     }

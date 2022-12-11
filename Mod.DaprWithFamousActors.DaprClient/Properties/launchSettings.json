@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Mod.DaprWithFamousActors.DaprClient": {
+      "commandName": "Project"
+    },
+    "Dapr-pwshclient": {
+      "commandName": "Executable",
+      "executablePath": "pwsh",
+      "commandLineArgs": "dapr run --app-id modDaprWithFamousActorsDaprClient --app-protocol grpc --log-level debug dotnet run modDaprWithFamousActors SayHello GrpcLover",
+      "workingDirectory": ".",
+      "nativeDebugging": true
+    }
+  }
+}
