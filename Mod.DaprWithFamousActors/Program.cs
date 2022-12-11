@@ -22,6 +22,8 @@ namespace Mod.DaprWithFamousActors
 {
     public class Program
     {
+        const string orleansDashboardPath = @"/orleansDashboard";
+
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
@@ -38,6 +40,10 @@ namespace Mod.DaprWithFamousActors
                     .AddActivityPropagation()
                     .UseLocalhostClustering()
                     .AddMemoryGrainStorage("StateStorage")
+                    .UseDashboard(dashboardOptions =>
+                    {
+                        dashboardOptions.HostSelf = false;
+                    })
                     .ConfigureServices(s =>
                     {
                         s.AddMediatR(typeof(Implementation.Mediatr.GreeterGrain.OnSayHello.OnSayHelloHandler).Assembly);
@@ -69,7 +75,7 @@ namespace Mod.DaprWithFamousActors
                         }
 
                         app.UseRouting();
-
+                        app.UseOrleansDashboard(new OrleansDashboard.DashboardOptions { BasePath = orleansDashboardPath });
                         app.UseEndpoints(endpoints =>
                         {
                             endpoints.MapGrpcService<DaprService>();
@@ -85,10 +91,18 @@ namespace Mod.DaprWithFamousActors
                 })
                 .ConfigureServices(services =>
                 {
+                    services.AddOpenTelemetryMetrics(metrics =>
+                    {
+                        metrics.AddMeter("Microsoft.Orleans");
+                        metrics.AddMeter("Microsoft.Orleans");
+                        metrics.AddMeter("Microsoft.Orleans.Runtime");
+                        metrics.AddMeter("Microsoft.Orleans.Application");
+                    });
                     services.AddOpenTelemetryTracing(
-                        (builder) => builder
+                        (tracing) => tracing
                             .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(typeof(Program).Assembly.GetName().Name))
                             .AddAspNetCoreInstrumentation()
+                            .AddSource("Microsoft.Orleans") 
                             .AddSource("Microsoft.Orleans.Runtime")
                             .AddSource("Microsoft.Orleans.Application")
                             .AddSource(Implementation.GrainFilters.ActivityPropagationGrainCallFilter.ActivitySourceName)
@@ -112,8 +126,8 @@ namespace Mod.DaprWithFamousActors
         /// Add <see cref="Activity.Current"/> propagation through grain calls.
         /// Note: according to <see cref="ActivitySource.StartActivity(string, ActivityKind)"/> activity will be created only when any listener for activity exists <see cref="ActivitySource.HasListeners()"/> and <see cref="ActivityListener.Sample"/> returns <see cref="ActivitySamplingResult.PropagationData"/>.
         /// </summary>
-        /// <param name="builder">The builder.</param>
-        /// <returns>The builder.</returns>
+        /// <param name="builder">The tracing.</param>
+        /// <returns>The tracing.</returns>
         public static ISiloBuilder AddActivityPropagation(this ISiloBuilder builder)
         {
             if (Activity.DefaultIdFormat != ActivityIdFormat.W3C)
@@ -128,8 +142,8 @@ namespace Mod.DaprWithFamousActors
         /// Add <see cref="Activity.Current"/> propagation through grain calls.
         /// Note: according to <see cref="ActivitySource.StartActivity(string, ActivityKind)"/> activity will be created only when any listener for activity exists <see cref="ActivitySource.HasListeners()"/> and <see cref="ActivityListener.Sample"/> returns <see cref="ActivitySamplingResult.PropagationData"/>.
         /// </summary>
-        /// <param name="builder">The builder.</param>
-        /// <returns>The builder.</returns>
+        /// <param name="builder">The tracing.</param>
+        /// <returns>The tracing.</returns>
         public static IClientBuilder AddActivityPropagation(this IClientBuilder builder)
         {
             if (Activity.DefaultIdFormat != ActivityIdFormat.W3C)
